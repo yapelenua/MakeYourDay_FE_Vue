@@ -1,0 +1,46 @@
+@import "element-plus/theme-chalk/src/dialog";
+@import "element-plus/theme-chalk/src/overlay";
+
+body {
+  .el-overlay {
+    background: #000000b8 !important;
+    display: flex !important;
+  }
+
+  .el-dialog {
+    --el-dialog-content-font-size: 1rem !important;
+    --el-dialog-margin-top: 20vh !important;
+
+    &.align-center-dialog {
+      @apply absolute left-1/2 top-1/2 -translate-x-2/4 -translate-y-2/4 m-0;
+    }
+
+    @apply rounded-3xl;
+
+    &__body {
+      @apply break-normal w-full;
+    }
+
+    .el-dialog__close.el-icon.el-icon-close {
+      @apply text-4xl;
+    }
+
+    &.no-header {
+      .el-dialog__header {
+        @apply p-0;
+      }
+    }
+
+    &.no-close-icon {
+      .el-dialog__close.el-icon.el-icon-close {
+        @apply hidden;
+      }
+    }
+
+    &.no-body-padding {
+      .el-dialog__body {
+        @apply p-0;
+      }
+    }
+  }
+}

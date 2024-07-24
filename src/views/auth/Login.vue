@@ -1,0 +1,71 @@
+<template>
+  <ElCard class="login-card mim-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
+    <h2 class="text-2xl font-bold mb-4">Login</h2>
+    <ElForm :model="loginForm" label-position="top" class="space-y-4 w-[250px]" @submit.prevent="login">
+      <ElFormItem label="Email" required>
+        <ElInput v-model="loginForm.email" type="email" required clearable placeholder="Enter your email" />
+      </ElFormItem>
+      <ElFormItem label="Password" required>
+        <ElInput v-model="loginForm.password" type="password" required clearable placeholder="Enter your password" />
+      </ElFormItem>
+      <ElFormItem>
+        <ElButton type="primary" native-type="submit" class="w-full">Login</ElButton>
+      </ElFormItem>
+      <div class="mt-4 text-center">
+        <span>Don`t have an account? </span>
+        <router-link to="/auth/sign-up" class="primary">Sign up</router-link>
+      </div>
+    </ElForm>
+  </ElCard>
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { supabase } from '@/supabase'
+import { useRouter } from 'vue-router'
+import { ElButton, ElCard, ElForm, ElFormItem, ElInput } from 'element-plus'
+
+const loginForm = ref({
+  email: '',
+  password: ''
+})
+const router = useRouter()
+
+const login = async () => {
+  try {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: loginForm.value.email,
+      password: loginForm.value.password
+    })
+    if (error) {
+      throw error
+    } else {
+      console.log('User logged in successfully')
+      router.push('/dashboard')
+    }
+  } catch (error) {
+    alert(error)
+  }
+}
+</script>
+
+<style scoped>
+.login-card {
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  animation: fadeInUp 1.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
