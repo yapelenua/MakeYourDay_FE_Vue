@@ -39,18 +39,19 @@
   </ElDialog>
 </template>
 <script lang="ts" setup>
-import { useKanbanStore } from '../store/modules/kanban.store'
-import { storeToRefs } from 'pinia'
+import { useKanban } from '../store/modules/kanban.store'
 import { ElImage } from 'element-plus'
 
-const kanbanStore = useKanbanStore()
 const {
   taskDialogVisible,
   selectedTask,
-  isEditing
-} = storeToRefs(kanbanStore)
+  isEditing,
+  startEditing,
+  cancelEdit,
+  saveTask,
+  deleteTask
+} = useKanban()
 
-const { startEditing, cancelEdit, saveTask, deleteTask } = useKanbanStore()
 </script>
 <style scoped>
 .el-card {

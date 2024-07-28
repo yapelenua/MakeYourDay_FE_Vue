@@ -1,7 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase } from '@/supabase'
-import { useGeneralStore } from '@/store/modules/general.store'
 import { v4 as uuidv4 } from 'uuid'
 import { parseISO, format, startOfToday } from 'date-fns'
 import type { IEvent } from '../../types/dashboard.types'
@@ -19,8 +18,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
     coords: { lat: '', lng: '' },
     priority: ''
   })
-  const generalStore = useGeneralStore()
-  const { user } = storeToRefs(generalStore)
+  const { user } = useGeneral()
 
   const dialogVisible = ref(false)
   const eventsInfoDialogVisible = ref(false)
@@ -83,8 +81,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
   }
 
   const getLatLong = async (address: string) => {
-    const apiKey = 'AIzaSyBPxc3D1mmEam5zKQUZTnMKID9x7kquhG4'
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${import.meta.env.VITE_API_GOOGLE_KEY}`
     try {
       const response = await fetch(url)
       const data = await response.json()
@@ -189,7 +186,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
 
     const autocompleteService = new google.maps.places.AutocompleteService()
     autocompleteService.getPlacePredictions({ input: queryString }, (predictions: any, status: string) => {
-      if (status !== google.maps.places.PlacesServiceStatus.OK) {
+      if (status !== google.maps.places.EPlacesServiceStatus.OK) {
         cb([])
         return
       }
@@ -229,3 +226,12 @@ export const useEventListStore = defineStore('eventListStore', () => {
     query
   }
 })
+
+export function useEvents () {
+  const store = useEventListStore()
+
+  return {
+    ...store,
+    ...storeToRefs(store)
+  }
+}

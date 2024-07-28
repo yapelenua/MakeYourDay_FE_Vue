@@ -2,7 +2,7 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": [
     "dts/*",
-    "src/**/*",
+    "src/**/*.ts",
     "src/**/*.vue",
     "tests",
     "tailwind/tailwind.colors.ts",
@@ -25,6 +25,7 @@
     },
     "types": [
       "unplugin-icons/types/vue"
-    ]
+    ],
+    "allowJs": false
   }
 }

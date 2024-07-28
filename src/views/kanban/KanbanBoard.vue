@@ -1,5 +1,5 @@
 <template>
-  <ElButton plain type="primary" class="m-5" @click="dialogVisible = !dialogVisible">
+  <ElButton plain type="primary" class="m-5" @click="toggleCreateTaskModal">
     Add new task
   </ElButton>
   <KanbanRow />
@@ -10,20 +10,15 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useKanbanStore } from './store/modules/kanban.store'
-import { storeToRefs } from 'pinia'
+import { useKanban } from './store/modules/kanban.store'
 import CreateTaskDialog from './components/CreateTaskDialog.vue'
 import TaskInfoDialog from './components/TaskInfoDialog.vue'
 import KanbanRow from './components/KanbanRow.vue'
 
-const kanbanStore = useKanbanStore()
 const {
-  dialogVisible
-} = storeToRefs(kanbanStore)
-
-const {
-  fetchKanbanData
-} = kanbanStore
+  fetchKanbanData,
+  toggleCreateTaskModal
+} = useKanban()
 
 onMounted(() => {
   fetchKanbanData()

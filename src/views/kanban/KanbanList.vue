@@ -11,52 +11,27 @@
 
     <div
       v-if="user?.kanbans && user.kanbans.length > 0"
-      class="w-full flex gap-[20px] flex-wrap justify-center"
+      class="w-full flex gap-[20px] flex-wrap justify-start"
     >
-      <ElCard
-        v-for="kanban in user.kanbans"
-        :key="kanban.id"
-        class="w-[200px] relative bg-white flex flex-col items-center p-4 shadow-md rounded-lg cursor-pointer"
-        @click.stop="navigateToKanban(kanban.id)"
-      >
-        <el-icon
-          class="absolute top-2 right-2"
-          @click.stop="deleteKanban(kanban.id)"
-        >
-          <Delete />
-        </el-icon>
-        <p class="font-bold truncate w-full" :title="kanban.name">
-          {{ kanban.name }}
-        </p>
-      </ElCard>
+      <KanbanItem @deleteKanban="deleteKanban" @navigateToKanban="navigateToKanban" />
     </div>
-
-    <ElEmpty v-else description="No boards available" class="max-w-[700px]" />
+    <ElEmpty v-else description="No boards available" class="max-w-full m-0" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useGeneralStore } from '@/store/modules/general.store'
-import { storeToRefs } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import { supabase } from '@/supabase'
 import { ElForm, ElFormItem, ElInput, ElButton } from 'element-plus'
-import { Delete } from '@element-plus/icons-vue'
+import type { IKanban } from './types/kanban.types'
 
-const generalStore = useGeneralStore()
-const { user } = storeToRefs(generalStore)
+const { user } = useGeneral()
 const router = useRouter()
 const kanbanForm = ref({
   name: ''
 })
-
-interface IKanban {
-  id: string
-  name: string
-  data: []
-}
 
 const createKanban = async () => {
   try {

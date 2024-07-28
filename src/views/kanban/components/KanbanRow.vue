@@ -16,12 +16,15 @@
         <template #item="{ element }">
           <el-badge :value="element.priority.slice(0,1)" :type="changePriorityColor(element.priority.slice(0,1))">
             <el-card class="kanban-item p-3 mb-2 cursor-grab" @click="openTaskDialog(element)">
-              <img :src="element.image.src" alt="Task Image">
+              <div class="task-image-wrapper">
+                <img v-if="element.image.src" :src="element.image.src" alt="Task Image" class="task-image">
+                <div v-else class="task-image-placeholder">
+                  <ElIcon><PictureFilled /></ElIcon>
+                </div>
+              </div>
               <h1 class="text-base font-medium mb-[7px]">{{ element.title }}</h1>
               <p class="text-sm mb-[7px]">{{ element.description }}</p>
               <p class="text-sm text-gray-500">{{ element.deadline }}</p>
-              <p class="text-sm text-gray-500">{{ element.status }}</p>
-              <p class="text-sm text-gray-500">{{ element.order }}</p>
             </el-card>
           </el-badge>
         </template>
@@ -29,27 +32,14 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import draggable from 'vuedraggable'
-import { useKanbanStore } from '../store/modules/kanban.store'
-import { storeToRefs } from 'pinia'
+import { useKanban } from '../store/modules/kanban.store'
+import { ElIcon } from 'element-plus'
+import { PictureFilled } from '@element-plus/icons-vue'
 
-const kanbanStore = useKanbanStore()
-const {
-  columns
-} = storeToRefs(kanbanStore)
-console.log(columns.value.tasks)
-
-if (columns.value.tasks) {
-  console.log('Yep')
-} else {
-  console.log('Nope')
-}
-
-const {
-  onDragEnd,
-  openTaskDialog
-} = kanbanStore
+const { onDragEnd, openTaskDialog, columns } = useKanban()
 
 const changePriorityColor = (priority: string) => {
   switch (priority) {
@@ -64,6 +54,7 @@ const changePriorityColor = (priority: string) => {
   }
 }
 </script>
+
 <style scoped>
 .kanban-board {
   display: flex;
@@ -92,5 +83,29 @@ const changePriorityColor = (priority: string) => {
   background-color: #f2f2f2;
   border-radius: 5px;
   cursor: grab;
+  width: 200px;
+}
+
+.task-image-wrapper {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.task-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.task-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
 }
 </style>

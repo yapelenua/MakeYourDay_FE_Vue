@@ -1,5 +1,5 @@
 <template>
-  <ElCard class="login-card mim-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
+  <ElCard class="auth-card mim-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
     <h2 class="text-2xl font-bold mb-4">Login</h2>
     <ElForm :model="loginForm" label-position="top" class="space-y-4 w-[250px]" @submit.prevent="login">
       <ElFormItem label="Email" required>
@@ -24,6 +24,7 @@ import { ref } from 'vue'
 import { supabase } from '@/supabase'
 import { useRouter } from 'vue-router'
 import { ElButton, ElCard, ElForm, ElFormItem, ElInput } from 'element-plus'
+const { isHeaderAvaiable } = useGenaral()
 
 const loginForm = ref({
   email: '',
@@ -42,30 +43,10 @@ const login = async () => {
     } else {
       console.log('User logged in successfully')
       router.push('/dashboard')
+      isHeaderAvaiable.value = true
     }
   } catch (error) {
     alert(error)
   }
 }
 </script>
-
-<style scoped>
-.login-card {
-  padding: 20px;
-  background-color: #ffffff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  animation: fadeInUp 1.5s ease-out;
-}
-
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-</style>

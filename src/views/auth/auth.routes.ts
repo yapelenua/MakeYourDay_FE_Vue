@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
-import DafaultLayoutNoAuth from '@/layouts/DefaultLayoutNoAuth.vue'
+import DafaultLayout from '@/layouts/DefaultLayout.vue'
 
 export const authRouteNames = {
   auth: 'auth',
@@ -11,7 +11,7 @@ export const authRoutes: RouteRecordRaw = {
   name: authRouteNames.auth,
   path: '/auth',
   redirect: { name: authRouteNames.login },
-  component: DafaultLayoutNoAuth,
+  component: DafaultLayout,
   children: [
     {
       path: 'login',

@@ -2,15 +2,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/supabase'
-import { useGeneralStore } from '@/store/modules/general.store'
 import { useRoute } from 'vue-router'
 import { v4 as uuidv4 } from 'uuid'
 import type { IColumn, ITask } from '../../types/kanban.types'
 import { format } from 'date-fns'
 
 export const useKanbanStore = defineStore('kanbanStore', () => {
-  const generalStore = useGeneralStore()
-  const { user } = storeToRefs(generalStore)
+  const { user } = useGeneral()
   const route = useRoute()
   const kanbanId = ref('')
 
@@ -260,6 +258,8 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
   }
 
   const deleteTask = async (taskId: string) => {
+    taskDialogVisible.value = false
+
     try {
       const userId = user.value?.id
       if (!userId) {
@@ -306,6 +306,10 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
     }
   }
 
+  const toggleCreateTaskModal = () => {
+    dialogVisible.value = !dialogVisible.value
+  }
+
   return {
     dialogVisible,
     taskDialogVisible,
@@ -320,6 +324,16 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
     cancelEdit,
     saveTask,
     deleteTask,
-    fetchKanbanData
+    fetchKanbanData,
+    toggleCreateTaskModal
   }
 })
+
+export function useKanban () {
+  const store = useKanbanStore()
+
+  return {
+    ...store,
+    ...storeToRefs(store)
+  }
+}

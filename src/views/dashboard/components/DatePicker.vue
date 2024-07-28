@@ -8,15 +8,10 @@
   />
 </template>
 <script lang="ts" setup>
-const eventListStore = useEventListStore()
 
 const {
+  handleDateSelect,
   selectedDate
-} = storeToRefs(eventListStore)
+} = useEvents()
 
-const {
-  handleDateSelect
-} = useEventListStore()
-
-console.log(selectedDate.value)
 </script>

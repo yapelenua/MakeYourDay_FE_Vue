@@ -4,6 +4,6 @@ export interface IEvent {
   description: string
   date: string
   location: string
-  coords: { lat: string; lng: string } | null
+  coords: { lat: number; lng: number } | null
   priority: string
 }

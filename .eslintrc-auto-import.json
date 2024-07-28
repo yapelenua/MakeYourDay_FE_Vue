@@ -328,6 +328,13 @@
     "ElMessage": true,
     "store": true,
     "useEventListStore": true,
-    "useKanbanStore": true
+    "useKanbanStore": true,
+    "useGaleryStore": true,
+    "useTask": true,
+    "useGalery": true,
+    "useKanban": true,
+    "useEvents": true,
+    "useGenaral": true,
+    "useGeneral": true
   }
 }

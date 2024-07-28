@@ -15,3 +15,9 @@ export interface ITask {
 export interface IColumn {
   tasks: ITask[]
 }
+
+export interface IKanban {
+  id: string
+  name: string
+  data: []
+}

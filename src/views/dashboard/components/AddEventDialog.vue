@@ -33,9 +33,7 @@
       </ElFormItem>
       <ElFormItem label="Priority" required>
         <ElSelect v-model="eventForm.priority" placeholder="Select Priority">
-          <ElOption label="Low" value="Low" />
-          <ElOption label="Medium" value="Medium" />
-          <ElOption label="High" value="High" />
+          <PriorityPicker />
         </ElSelect>
       </ElFormItem>
       <ElFormItem>
@@ -46,12 +44,16 @@
 </template>
 
 <script lang="ts" setup>
-import { storeToRefs } from 'pinia'
-import { ElForm, ElFormItem, ElInput, ElButton, ElDialog, ElSelect, ElOption, ElDatePicker } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElButton, ElDialog, ElSelect, ElDatePicker } from 'element-plus'
+import PriorityPicker from '../../shared/components/PriorityPicker.vue'
 
-const eventListStore = useEventListStore()
-
-const { eventForm, dialogVisible, query } = storeToRefs(eventListStore)
-const { addEvent, selectLocation, fetchSuggestions } = useEventListStore()
+const {
+  eventForm,
+  dialogVisible,
+  query,
+  addEvent,
+  selectLocation,
+  fetchSuggestions
+} = useEvents()
 
 </script>

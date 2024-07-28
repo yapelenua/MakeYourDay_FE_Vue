@@ -6,6 +6,7 @@ export const useGeneralStore = defineStore('generalStore', () => {
   const user = ref()
   const generalLoading = ref(false)
   const screenWidth = ref(window.innerWidth)
+  const isHeaderAvaiable = ref(false)
 
   const fetchUserInfo = async () => {
     try {
@@ -21,6 +22,7 @@ export const useGeneralStore = defineStore('generalStore', () => {
       if (profileError) throw profileError
 
       user.value = profile
+      isHeaderAvaiable.value = true
       return session
     } catch (error) {
       console.error('Error fetching user info:')
@@ -33,14 +35,27 @@ export const useGeneralStore = defineStore('generalStore', () => {
     screenWidth.value = window.innerWidth
   }
 
+  const isMobile = computed(() => screenWidth.value < 1200)
+
   return {
     user,
     fetchUserInfo,
     screenWidth,
-    updateScreenSize
+    updateScreenSize,
+    isMobile,
+    isHeaderAvaiable
   }
 })
 
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useGeneralStore, import.meta.hot))
+}
+
+export function useGeneral () {
+  const store = useGeneralStore()
+
+  return {
+    ...store,
+    ...storeToRefs(store)
+  }
 }

@@ -36,7 +36,7 @@
           />
         </ElFormItem>
         <h1>Your location</h1>
-        <GoogleMap :lat="selectedEvent.coords?.lat" :lng="selectedEvent.coords?.lng" />
+        <GoogleMap :lat="selectedEvent.coords?.lat ?? 50.450001" :lng="selectedEvent.coords?.lng ?? 30.523333" />
         <ElFormItem class="pt-[10px]">
           <ElButton v-if="!isEditing" type="primary" @click="startEditing">Edit</ElButton>
           <ElButton type="success" :disabled="!isEditing" @click="saveEdit">Save</ElButton>
@@ -48,16 +48,8 @@
   </ElDialog>
 </template>
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { ElForm, ElFormItem, ElInput, ElButton, ElDialog } from 'element-plus'
 import GoogleMap from './GoogleMap.vue'
-const eventListStore = useEventListStore()
-
-const {
-  eventsInfoDialogVisible,
-  selectedEvent,
-  isEditing
-} = storeToRefs(eventListStore)
 
 const {
   startEditing,
@@ -65,6 +57,9 @@ const {
   cancelEdit,
   deleteEvent,
   fetchSuggestions,
-  selectLocation
-} = useEventListStore()
+  selectLocation,
+  eventsInfoDialogVisible,
+  selectedEvent,
+  isEditing
+} = useEvents()
 </script>

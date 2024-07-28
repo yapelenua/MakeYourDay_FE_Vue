@@ -23,9 +23,7 @@
       </ElFormItem>
       <ElFormItem label="Priority" required>
         <ElSelect v-model="kanbanForm.priority" placeholder="Select Priority">
-          <ElOption label="Low" value="Low" />
-          <ElOption label="Medium" value="Medium" />
-          <ElOption label="High" value="High" />
+          <PriorityPicker />
         </ElSelect>
       </ElFormItem>
       <ElFormItem>
@@ -54,19 +52,15 @@
   </ElDialog>
 </template>
 <script lang="ts" setup>
-import { useKanbanStore } from '../store/modules/kanban.store'
-import { storeToRefs } from 'pinia'
+import { useKanban } from '../store/modules/kanban.store'
 import { v4 as uuidv4 } from 'uuid'
+import PriorityPicker from '../../shared/components/PriorityPicker.vue'
 
-const kanbanStore = useKanbanStore()
 const {
   dialogVisible,
-  kanbanForm
-} = storeToRefs(kanbanStore)
-
-const {
+  kanbanForm,
   addTask
-} = kanbanStore
+} = useKanban()
 
 const handleBeforeUpload = async (file: File) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'

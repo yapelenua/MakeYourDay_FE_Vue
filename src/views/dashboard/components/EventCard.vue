@@ -5,7 +5,7 @@
     @click="openEventDialog(event)"
   >
     <div class="map-container">
-      <GoogleMap :lat="event.coords?.lat" :lng="event.coords?.lng" />
+      <GoogleMap :lat="event.coords?.lat ?? 50.450001" :lng="event.coords?.lng ?? 30.523333" />
     </div>
 
     <p class="font-bold truncate w-full" :title="event.title">
@@ -30,7 +30,7 @@ import type { IEvent } from '../types/dashboard.types'
 const {
   truncateText,
   openEventDialog
-} = useEventListStore()
+} = useEvents()
 
 defineProps<{ event: IEvent }>()
 

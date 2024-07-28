@@ -43,18 +43,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
+import { ref, onMounted, onBeforeUnmount, watch, onUpdated } from 'vue'
 import { ElButton } from 'element-plus'
 import AddEventDialog from './AddEventDialog.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper-bundle.css'
 import type { IEvent } from '../types/dashboard.types'
 
-const eventListStore = useEventListStore()
-const generalStore = useGeneralStore()
-const { updateScreenSize } = useGeneralStore()
-const { screenWidth } = storeToRefs(generalStore)
+const { screenWidth, updateScreenSize } = useGeneral()
 const visibleEvents = ref<IEvent[]>([])
 const loadMoreTrigger = ref<HTMLDivElement | null>(null)
 
@@ -63,7 +59,7 @@ const {
   filteredEvents,
   searchValue,
   selectedDate
-} = storeToRefs(eventListStore)
+} = useEvents()
 
 const loadMoreEvents = () => {
   const currentLength = visibleEvents.value.length
@@ -71,27 +67,47 @@ const loadMoreEvents = () => {
   visibleEvents.value = [...visibleEvents.value, ...nextBatch]
 }
 
-onMounted(() => {
-  window.addEventListener('resize', updateScreenSize)
+const observer = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    loadMoreEvents()
+  }
+}, {
+  rootMargin: '20px',
+  threshold: 1.0
+})
 
-  visibleEvents.value = filteredEvents.value.slice(0, 4)
-
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      loadMoreEvents()
-    }
-  }, {
-    rootMargin: '20px',
-    threshold: 1.0
-  })
-
+const observeLoadMoreTrigger = () => {
   if (loadMoreTrigger.value) {
     observer.observe(loadMoreTrigger.value)
   }
+}
+
+const unobserveLoadMoreTrigger = () => {
+  if (loadMoreTrigger.value) {
+    observer.unobserve(loadMoreTrigger.value)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateScreenSize)
+  visibleEvents.value = filteredEvents.value.slice(0, 4)
+  observeLoadMoreTrigger()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateScreenSize)
+  unobserveLoadMoreTrigger()
+})
+
+onUpdated(() => {
+  unobserveLoadMoreTrigger()
+  observeLoadMoreTrigger()
 })
 
 watch([filteredEvents, selectedDate], () => {
   visibleEvents.value = filteredEvents.value.slice(0, 4)
+  unobserveLoadMoreTrigger()
+  observeLoadMoreTrigger()
 })
 </script>
 

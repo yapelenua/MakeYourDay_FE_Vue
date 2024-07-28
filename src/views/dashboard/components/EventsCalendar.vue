@@ -21,7 +21,7 @@ import { ElCalendar } from 'element-plus'
 const {
   handleDateSelect,
   hasEventOnDate
-} = useEventListStore()
+} = useEvents()
 </script>
 
 <style>
