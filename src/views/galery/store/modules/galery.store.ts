@@ -14,12 +14,20 @@ export const useGaleryStore = defineStore('galeryStore', () => {
     const isLt500K = file.size / 1024 < 500
 
     if (!isJpgOrPng) {
-      alert('You can only upload JPG/PNG file!')
+      ElNotification({
+        title: 'Error',
+        message: 'You can only upload JPG/PNG file!',
+        type: 'error'
+      })
       return false
     }
 
     if (!isLt500K) {
-      alert('Image must be smaller than 500KB!')
+      ElNotification({
+        title: 'Error',
+        message: 'Image must be smaller than 500KB!',
+        type: 'error'
+      })
       return false
     }
 
@@ -28,47 +36,51 @@ export const useGaleryStore = defineStore('galeryStore', () => {
   }
 
   const addImage = async (file: File) => {
-    try {
-      const reader = new FileReader()
-      reader.onload = async (e) => {
-        const base64Image = e.target?.result as string
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      const base64Image = e.target?.result as string
+      const newImage: IPhoto = {
+        id: uuidv4(),
+        src: base64Image
+      }
 
-        if (user.value && user.value.images) {
-          const newImage: IPhoto = {
-            id: uuidv4(),
-            src: base64Image
-          }
-          user.value.images.push(newImage)
+      if (user.value && user.value.images) {
+        const originalImages = [...user.value.images]
+        user.value.images.push(newImage)
 
+        try {
           const { error } = await supabase
             .from('profiles')
             .update({ images: user.value.images })
             .eq('id', user.value.id)
 
           if (error) throw error
+        } catch (error) {
+          user.value.images = originalImages
+          console.error('Error adding image:', error)
         }
       }
-      reader.readAsDataURL(file)
-    } catch (error) {
-      console.error('Error adding image:', error)
     }
+    reader.readAsDataURL(file)
   }
 
   const removeImage = async (id: string) => {
-    try {
-      if (user.value && user.value.images) {
-        user.value.images = user.value.images.filter((image: IPhoto) => image.id !== id)
+    photoPreviewDialog.value = false
 
+    if (user.value && user.value.images) {
+      const originalImages = [...user.value.images]
+      user.value.images = user.value.images.filter((image: IPhoto) => image.id !== id)
+
+      try {
         const { error } = await supabase
           .from('profiles')
           .update({ images: user.value.images })
           .eq('id', user.value.id)
         if (error) throw error
-
-        photoPreviewDialog.value = false
+      } catch (error) {
+        user.value.images = originalImages
+        console.error('Error removing image:', error)
       }
-    } catch (error) {
-      console.error('Error removing image:', error)
     }
   }
 
@@ -98,8 +110,7 @@ export const useGaleryStore = defineStore('galeryStore', () => {
     downloadImage,
     user
   }
-}
-)
+})
 
 export function useGalery () {
   const store = useGaleryStore()

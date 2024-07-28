@@ -5,7 +5,7 @@
     append-to-body
     title="Event Info"
     destroy-on-close
-    width="500"
+    class="w-[50%] max-w-[500px]"
     custom-class="overflow-y-hidden"
   >
     <div v-if="selectedEvent" class="overflow-hidden">

@@ -36,7 +36,11 @@ const kanbanForm = ref({
 const createKanban = async () => {
   try {
     if (!kanbanForm.value.name.trim()) {
-      alert('Please enter a board name.')
+      ElNotification({
+        title: 'Error',
+        message: 'Please enter a board name.',
+        type: 'error'
+      })
       return
     }
 
@@ -58,9 +62,17 @@ const createKanban = async () => {
     }
 
     kanbanForm.value.name = ''
-    alert('Board created successfully.')
+    ElNotification({
+      title: 'Success',
+      message: 'Board created successfully.',
+      type: 'success'
+    })
   } catch (error) {
-    console.error('Error creating kanban:', error)
+    ElNotification({
+      title: 'Error',
+      message: 'Error creating kanban',
+      type: 'error'
+    })
   }
 }
 
@@ -79,13 +91,25 @@ const deleteKanban = async (kanbanId: string) => {
 
         if (error) throw error
 
-        alert('Board deleted successfully.')
+        ElNotification({
+          title: 'Success',
+          message: 'Board deleted successfully.',
+          type: 'success'
+        })
       } else {
-        console.error('Kanban not found.')
+        ElNotification({
+          title: 'Error',
+          message: 'Kanban not found.',
+          type: 'error'
+        })
       }
     }
   } catch (error) {
-    console.error('Error deleting kanban:', error)
+    ElNotification({
+      title: 'Error',
+      message: 'Error deleting kanban',
+      type: 'error'
+    })
   }
 }
 

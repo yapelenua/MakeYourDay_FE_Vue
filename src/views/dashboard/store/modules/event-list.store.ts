@@ -31,7 +31,11 @@ export const useEventListStore = defineStore('eventListStore', () => {
   const addEvent = async () => {
     try {
       if (!eventForm.value.name.trim() || !eventForm.value.description.trim() || !eventForm.value.date) {
-        alert('Please fill in all fields.')
+        ElNotification({
+          title: 'Error',
+          message: 'Please fill in all fields',
+          type: 'error'
+        })
         return
       }
 

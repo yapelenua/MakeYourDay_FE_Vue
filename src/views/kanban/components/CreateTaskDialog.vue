@@ -5,7 +5,7 @@
     append-to-body
     title="Add Event"
     destroy-on-close
-    width="500"
+    class="w-[50%] max-w-[500px]"
   >
     <ElForm :model="kanbanForm" label-position="top" class="mb-4" @submit.prevent="addTask">
       <ElFormItem label="Name" required>
@@ -67,12 +67,20 @@ const handleBeforeUpload = async (file: File) => {
   const isLt500K = file.size / 1024 < 500
 
   if (!isJpgOrPng) {
-    alert('You can only upload JPG/PNG file!')
+    ElNotification({
+      title: 'Error',
+      message: 'You can only upload JPG/PNG file!',
+      type: 'error'
+    })
     return false
   }
 
   if (!isLt500K) {
-    alert('Image must be smaller than 500KB!')
+    ElNotification({
+      title: 'Error',
+      message: 'Image must be smaller than 500KB',
+      type: 'error'
+    })
     return false
   }
 

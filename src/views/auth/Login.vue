@@ -24,7 +24,7 @@ import { ref } from 'vue'
 import { supabase } from '@/supabase'
 import { useRouter } from 'vue-router'
 import { ElButton, ElCard, ElForm, ElFormItem, ElInput } from 'element-plus'
-const { isHeaderAvaiable } = useGenaral()
+const { isHeaderAvaiable } = useGeneral()
 
 const loginForm = ref({
   email: '',
@@ -46,7 +46,11 @@ const login = async () => {
       isHeaderAvaiable.value = true
     }
   } catch (error) {
-    alert(error)
+    ElNotification({
+      title: 'Error',
+      message: `${error}`,
+      type: 'error'
+    })
   }
 }
 </script>

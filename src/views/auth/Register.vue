@@ -1,7 +1,8 @@
 <template>
-  <ElCard class="auth-card mim-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
+  <ElCard class="auth-card min-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
     <h2 class="text-2xl font-bold mb-4">Register</h2>
     <ElForm
+      ref="registerFormRef"
       :model="registerForm"
       :rules="signUpRules"
       label-position="top"
@@ -36,18 +37,19 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { supabase } from '@/supabase'
-import 'element-plus/dist/index.css'
+import { ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
 
-const registerForm = ref({
+const registerFormRef = ref()
+const registerForm = reactive({
   email: '',
   password: '',
   confirmPassword: ''
 })
 
 const confirmPasswordValidator = (_: any, value: string, callback: any) => {
-  if (value !== registerForm.value.password) {
-    callback(new Error('Password does not match'))
+  if (value !== registerForm.password) {
+    callback(new Error('Passwords do not match'))
   } else {
     callback()
   }
@@ -56,37 +58,57 @@ const confirmPasswordValidator = (_: any, value: string, callback: any) => {
 const signUpRules = reactive({
   email: [useRequiredRule(), useEmailRule()],
   password: [useRequiredRule(), useMinLenRule(6)],
-  confirmPassword: [
-    useRequiredRule(),
-    { validator: confirmPasswordValidator, trigger: 'blur' }
-  ]
+  confirmPassword: [useRequiredRule(), { validator: confirmPasswordValidator, trigger: 'blur' }]
 })
 
 const router = useRouter()
 
-const register = async () => {
-  try {
-    const valid = await (this.$refs.form as any).validate()
-    if (!valid) {
-      return
-    }
+const register = () => {
+  registerFormRef.value?.validate(async (isValid: boolean) => {
+    if (isValid) {
+      try {
+        const { email, password } = registerForm
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password
+        })
 
-    const { data, error } = await supabase.auth.signUp({
-      email: registerForm.value.email,
-      password: registerForm.value.password
-    })
+        if (error) throw error
 
-    if (error) {
-      throw error
+        const { user } = data
+        ElNotification({
+          title: 'Success',
+          message: 'User registered successfully, check your email',
+          type: 'success'
+        })
+        console.log('User registered successfully:', user)
+        router.push('/auth/login')
+      } catch (error: any) {
+        ElNotification({
+          title: 'Error',
+          message: `Registration error: ${error.message}`,
+          type: 'error'
+        })
+        console.error('Registration error:', error)
+      }
     } else {
-      const { user } = data
-      alert('User registered successfully, check your email')
-      console.log('User registered successfully:', user)
-      router.push('/auth/login')
+      ElNotification({
+        title: 'Error',
+        message: 'Please fill in all fields',
+        type: 'error'
+      })
     }
-  } catch (error) {
-    alert('Registration error: ' + error.message)
-    console.error('Registration error:', error)
-  }
+  })
 }
 </script>
+
+<style scoped>
+.auth-card {
+  min-width: 320px;
+  width: 450px;
+  height: 400px;
+  display: flex;
+  justify-center: center;
+  align-items: center;
+}
+</style>

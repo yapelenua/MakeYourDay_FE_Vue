@@ -5,7 +5,7 @@
     append-to-body
     title="Add Event"
     destroy-on-close
-    width="500"
+    class="w-[50%] max-w-[500px]"
   >
     <ElForm :model="eventForm" label-position="top" class="mb-4" @submit.prevent="addEvent">
       <ElFormItem label="Name" required>

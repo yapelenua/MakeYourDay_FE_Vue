@@ -2,11 +2,11 @@
   <ElCard
     v-for="kanban in user.kanbans"
     :key="kanban.id"
-    class="w-[200px] relative bg-white flex flex-col items-center p-4 shadow-md rounded-lg cursor-pointer"
+    class="w-[200px] bg-white flex shadow-md rounded-lg cursor-pointer"
     @click.stop="emitNavigateToKanban(kanban.id)"
   >
     <el-icon
-      class="absolute top-2 right-2"
+      class="cursor-pointer text-gray-500 hover:text-red-500"
       @click.stop="emitDeleteKanban(kanban.id)"
     >
       <Delete />
