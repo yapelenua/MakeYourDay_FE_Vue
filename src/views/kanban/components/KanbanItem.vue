@@ -2,20 +2,21 @@
   <ElCard
     v-for="kanban in user.kanbans"
     :key="kanban.id"
-    class="w-[200px] bg-white flex shadow-md rounded-lg cursor-pointer"
+    class="w-[200px] bg-white flex flex-col shadow-md rounded-lg cursor-pointer p-4"
     @click.stop="emitNavigateToKanban(kanban.id)"
   >
     <el-icon
-      class="cursor-pointer text-gray-500 hover:text-red-500"
+      class="self-end cursor-pointer text-gray-500 hover:text-red-500"
       @click.stop="emitDeleteKanban(kanban.id)"
     >
       <Delete />
     </el-icon>
-    <p class="font-bold truncate w-full" :title="kanban.name">
+    <p class="truncate-multiline font-bold mt-2" :title="kanban.name">
       {{ kanban.name }}
     </p>
   </ElCard>
 </template>
+
 <script lang="ts" setup>
 import { Delete } from '@element-plus/icons-vue'
 

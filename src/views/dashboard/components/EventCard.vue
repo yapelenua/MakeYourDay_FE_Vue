@@ -8,11 +8,11 @@
       <GoogleMap :lat="event.coords?.lat ?? 50.450001" :lng="event.coords?.lng ?? 30.523333" />
     </div>
 
-    <p class="font-bold truncate w-full" :title="event.title">
-      {{ truncateText(event.title) }}
+    <p class="font-bold truncate-multiline w-full" :title="event.title">
+      {{ event.title }}
     </p>
-    <p class="text-gray-600 truncate w-full" :title="event.description">
-      {{ truncateText(event.description) }}
+    <p class="truncate-multiline text-gray-600" :title="event.description">
+      {{ event.description }}
     </p>
 
     <div
@@ -28,7 +28,6 @@
 import type { IEvent } from '../types/dashboard.types'
 
 const {
-  truncateText,
   openEventDialog
 } = useEvents()
 

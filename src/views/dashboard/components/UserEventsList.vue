@@ -21,17 +21,18 @@
       <template v-if="filteredEvents.length > 0">
         <template v-if="screenWidth < 1200">
           <Swiper :slides-per-view="1" :space-between="50" class="swiper-container">
-            <SwiperSlide v-for="event in filteredEvents" :key="event.id">
+            <SwiperSlide v-for="event in visibleEvents" :key="event.id">
               <EventCard :event="event" />
             </SwiperSlide>
           </Swiper>
+          <div ref="loadMoreTrigger" class="load-more-trigger" />
         </template>
         <template v-else>
           <div v-for="event in visibleEvents" :key="event.id" class="mt-5">
             <EventCard :event="event" />
           </div>
         </template>
-        <div ref="loadMoreTrigger" class="w-full h-10" />
+        <div ref="loadMoreTrigger" class="load-more-trigger" />
       </template>
       <template v-else>
         <div class="h-96 w-full">
@@ -43,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, onUpdated } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, onUpdated, nextTick } from 'vue'
 import { ElButton } from 'element-plus'
 import AddEventDialog from './AddEventDialog.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
@@ -91,7 +92,9 @@ const unobserveLoadMoreTrigger = () => {
 onMounted(() => {
   window.addEventListener('resize', updateScreenSize)
   visibleEvents.value = filteredEvents.value.slice(0, 4)
-  observeLoadMoreTrigger()
+  nextTick(() => {
+    observeLoadMoreTrigger()
+  })
 })
 
 onBeforeUnmount(() => {
@@ -121,5 +124,10 @@ watch([filteredEvents, selectedDate], () => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.load-more-trigger {
+  width: 100%;
+  height: 10px;
 }
 </style>
