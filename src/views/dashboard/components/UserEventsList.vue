@@ -11,7 +11,10 @@
     <AddEventDialog />
 
     <!-- User Events List -->
-    <div class="w-full h-[500px] flex flex-wrap gap-5 overflow-y-auto justify-center">
+    <div
+      class="w-full flex flex-wrap gap-5 justify-center"
+      :class="screenWidth < 1200 ? 'h-[300px]' : 'h-[500px] overflow-y-auto'"
+    >
       <el-input
         v-model="searchValue"
         placeholder="Search your event"
