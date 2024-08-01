@@ -1,5 +1,5 @@
 <template>
-  <ElCard class="auth-card mim-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
+  <ElCard class="auth-card rounded-xl mim-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
     <h2 class="text-2xl font-bold mb-4">Login</h2>
     <ElForm :model="loginForm" label-position="top" class="space-y-4 w-[250px]" @submit.prevent="login">
       <ElFormItem label="Email" required>

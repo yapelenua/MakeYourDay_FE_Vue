@@ -54,7 +54,7 @@
 <script lang="ts" setup>
 import { useKanban } from '../store/modules/kanban.store'
 import { v4 as uuidv4 } from 'uuid'
-import PriorityPicker from '../../shared/components/PriorityPicker.vue'
+import PriorityPicker from '../../shared/PriorityPicker.vue'
 
 const {
   dialogVisible,

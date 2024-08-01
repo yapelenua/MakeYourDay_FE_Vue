@@ -9,10 +9,10 @@
     </div>
 
     <p class="font-bold truncate-multiline w-full" :title="event.title">
-      {{ event.title }}
+      {{ truncateText(event.title) }}
     </p>
     <p class="truncate-multiline text-gray-600" :title="event.description">
-      {{ event.description }}
+      {{ truncateText(event.description) }}
     </p>
 
     <div
@@ -28,7 +28,8 @@
 import type { IEvent } from '../types/dashboard.types'
 
 const {
-  openEventDialog
+  openEventDialog,
+  truncateText
 } = useEvents()
 
 defineProps<{ event: IEvent }>()

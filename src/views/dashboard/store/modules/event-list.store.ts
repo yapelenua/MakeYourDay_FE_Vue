@@ -44,8 +44,8 @@ export const useEventListStore = defineStore('eventListStore', () => {
         title: eventForm.value.name,
         description: eventForm.value.description,
         date: format(new Date(eventForm.value.date), 'yyyy-MM-dd') || selectedDate.value,
-        location: eventForm.value.location,
-        coords: await getLatLong(eventForm.value.location),
+        location: query.value,
+        coords: await getLatLong(query.value),
         priority: eventForm.value.priority
       }
 

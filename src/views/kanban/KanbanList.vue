@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[50vw] h-[50vh] mx-auto p-6">
+  <div class="w-[85vw] h-[80vh] mx-auto p-6">
     <ElForm :model="kanbanForm" label-position="top" @submit.prevent="createKanban">
       <ElFormItem label="Board Name" required>
         <ElInput v-model="kanbanForm.name" placeholder="Enter board name" required clearable />

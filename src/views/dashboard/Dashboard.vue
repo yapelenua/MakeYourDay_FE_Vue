@@ -1,10 +1,12 @@
 <!-- eslint-disable max-len -->
 <template>
-  <div class="flex flex-wrap-reverse p-[20px] w-[60vw] h-[70vh] max-h-[90vh] items-center place-content-around pt-[50px]">
-    <UserEventsList />
-    <component :is="isMobile ? DatePicker : EventsCalendar" />
+  <div class="flex flex-col">
+    <div class="flex flex-wrap-reverse p-[20px] w-[85vw] h-[80vh] max-h-[90vh] items-center place-content-around pt-[50px]">
+      <UserEventsList />
+      <component :is="isMobile ? DatePicker : EventsCalendar" />
+    </div>
+    <EventInfo />
   </div>
-  <EventInfo />
 </template>
 
 <script setup lang="ts">

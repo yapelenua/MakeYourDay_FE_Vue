@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[20vw] min-w-[300px]">
+  <div class="w-[500px] min-w-[300px]">
     <div class="calendar-container bg-white p-4 rounded-lg shadow-md">
       <ElCalendar @input="handleDateSelect">
         <template #date-cell="{ data }">
@@ -41,6 +41,10 @@ const {
   border: none;
 }
 
+.is-today {
+  color: black !important;
+}
+
 .el-calendar-table td .el-calendar-day {
   display: flex;
   justify-content: center;
@@ -66,15 +70,13 @@ const {
   justify-content: center;
   align-items: center;
   width: 20px;
+  padding: 15px;
   border-radius: var(--el-calendar-cell-border-radius);
   height: 20px;
   background-color: #409EFF;
 }
 
 .is-selected {
-  background-color: #409EFF;
-  border: 2px solid #409EFF;
-  box-sizing: border-box;
-  color: #fff;
+  background: #fff !important;
 }
 </style>

@@ -2,18 +2,18 @@
   <ElCard
     v-for="kanban in user.kanbans"
     :key="kanban.id"
-    class="w-[200px] bg-white flex flex-col shadow-md rounded-lg cursor-pointer p-4"
+    class="w-[200px] bg-white flex flex-col shadow-md rounded-lg cursor-pointer"
     @click.stop="emitNavigateToKanban(kanban.id)"
   >
+    <p class="truncate-multiline font-bold mb-[8px]" :title="kanban.name">
+      {{ kanban.name }}
+    </p>
     <el-icon
       class="self-end cursor-pointer text-gray-500 hover:text-red-500"
       @click.stop="emitDeleteKanban(kanban.id)"
     >
       <Delete />
     </el-icon>
-    <p class="truncate-multiline font-bold mt-2" :title="kanban.name">
-      {{ kanban.name }}
-    </p>
   </ElCard>
 </template>
 

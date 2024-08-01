@@ -9,20 +9,20 @@
     </div>
 
     <AddEventDialog />
+    <el-input
+      v-model="searchValue"
+      placeholder="Search your event"
+      clearable
+      class="h-[30px] w-full mb-[10px]"
+    />
 
     <!-- User Events List -->
     <div
-      class="w-full flex flex-wrap gap-5 justify-center"
-      :class="screenWidth < 1200 ? 'h-[300px]' : 'h-[500px] overflow-y-auto'"
+      class="w-full flex flex-wrap gap-5"
+      :class="isMobile ? 'h-[300px]' : 'h-[500px] overflow-y-auto'"
     >
-      <el-input
-        v-model="searchValue"
-        placeholder="Search your event"
-        clearable
-        class="h-[30px] w-[300px]"
-      />
       <template v-if="filteredEvents.length > 0">
-        <template v-if="screenWidth < 1200">
+        <template v-if="isMobile">
           <Swiper :slides-per-view="1" :space-between="50" class="swiper-container">
             <SwiperSlide v-for="event in visibleEvents" :key="event.id">
               <EventCard :event="event" />
@@ -47,14 +47,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, onUpdated, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, onUpdated } from 'vue'
 import { ElButton } from 'element-plus'
 import AddEventDialog from './AddEventDialog.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper-bundle.css'
 import type { IEvent } from '../types/dashboard.types'
 
-const { screenWidth, updateScreenSize } = useGeneral()
+const { isMobile, updateScreenSize } = useGeneral()
 const visibleEvents = ref<IEvent[]>([])
 const loadMoreTrigger = ref<HTMLDivElement | null>(null)
 
@@ -95,9 +95,7 @@ const unobserveLoadMoreTrigger = () => {
 onMounted(() => {
   window.addEventListener('resize', updateScreenSize)
   visibleEvents.value = filteredEvents.value.slice(0, 4)
-  nextTick(() => {
-    observeLoadMoreTrigger()
-  })
+  observeLoadMoreTrigger()
 })
 
 onBeforeUnmount(() => {

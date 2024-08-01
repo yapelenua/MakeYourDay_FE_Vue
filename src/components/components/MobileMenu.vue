@@ -1,10 +1,11 @@
+<!-- eslint-disable max-len -->
 <template>
   <transition name="slide-fade">
     <div v-if="isMenuOpen" class="md:hidden">
-      <RouterLink v-for="route in headerRoutes" :key="route.to" :to="route.to" :class="route.class" @click="toggleMenu">
+      <RouterLink v-for="route in headerRoutes" :key="route.to" :to="route.to" :class="route.class" @click="$emit('toggleMenu')">
         {{ route.title }}
       </RouterLink>
-      <ElButton type="danger" class="block w-full text-left px-4 py-2" @click="logout">Logout</ElButton>
+      <ElButton type="danger" class="block w-full text-left px-4 py-2" @click="$emit('logout')">Logout</ElButton>
     </div>
   </transition>
 </template>
@@ -12,20 +13,13 @@
 <script setup lang="ts">
 import type { IRoute } from '../types/components.types'
 
-const emit = defineEmits(['toggleMenu', 'logout'])
+defineEmits(['toggleMenu', 'logout'])
 
 defineProps<{
   isMenuOpen: boolean
   headerRoutes: IRoute[]
 }>()
 
-const toggleMenu = () => {
-  emit('toggleMenu')
-}
-
-const logout = () => {
-  emit('logout')
-}
 </script>
 <style scoped>
 .slide-fade-enter-active,

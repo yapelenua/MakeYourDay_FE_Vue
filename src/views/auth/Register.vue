@@ -1,5 +1,5 @@
 <template>
-  <ElCard class="auth-card min-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
+  <ElCard class="auth-card rounded-xl min-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
     <h2 class="text-2xl font-bold mb-4">Register</h2>
     <ElForm
       ref="registerFormRef"
@@ -101,14 +101,3 @@ const register = () => {
   })
 }
 </script>
-
-<style scoped>
-.auth-card {
-  min-width: 320px;
-  width: 450px;
-  height: 400px;
-  display: flex;
-  justify-center: center;
-  align-items: center;
-}
-</style>

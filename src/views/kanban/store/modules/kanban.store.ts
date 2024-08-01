@@ -203,6 +203,7 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
   const saveTask = async () => {
     try {
       if (selectedTask.value && user.value) {
+        selectedTask.value.deadline = format(new Date(selectedTask.value.deadline), 'yyyy-MM-dd')
         const kanbanIdValue = kanbanId.value
         const userId = user.value.id
 

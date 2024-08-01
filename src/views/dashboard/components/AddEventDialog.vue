@@ -5,7 +5,7 @@
     append-to-body
     title="Add Event"
     destroy-on-close
-    class="w-[50%] max-w-[500px]"
+    class="w-[50%] max-w-[500px] p-[30px]"
   >
     <ElForm :model="eventForm" label-position="top" class="mb-4" @submit.prevent="addEvent">
       <ElFormItem label="Name" required>
@@ -19,7 +19,7 @@
           v-model="query"
           :fetch-suggestions="fetchSuggestions"
           clearable
-          class="inline-input w-50"
+          class="inline-input w-full"
           placeholder="Please Input"
           @select="selectLocation"
         />
@@ -45,7 +45,7 @@
 
 <script lang="ts" setup>
 import { ElForm, ElFormItem, ElInput, ElButton, ElDialog, ElSelect, ElDatePicker } from 'element-plus'
-import PriorityPicker from '../../shared/components/PriorityPicker.vue'
+import PriorityPicker from '../../shared/PriorityPicker.vue'
 
 const {
   eventForm,

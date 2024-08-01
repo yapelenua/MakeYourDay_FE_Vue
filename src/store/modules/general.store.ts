@@ -35,7 +35,7 @@ export const useGeneralStore = defineStore('generalStore', () => {
     screenWidth.value = window.innerWidth
   }
 
-  const isMobile = computed(() => screenWidth.value < 1200)
+  const isMobile = computed(() => screenWidth.value < 1250)
 
   return {
     user,
