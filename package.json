@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check && \"build-only {@}\" --",
+    "build": "run-p type-check",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
@@ -17,7 +17,7 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/google.maps": "^3.55.12",
     "@vueuse/core": "^10.11.0",
-    "axios": "^1.6.7",
+    "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "element-plus": "^2.5.5",
     "lodash": "^4.17.21",
