@@ -63,6 +63,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
         eventForm.value.name = ''
         eventForm.value.description = ''
         eventForm.value.date = ''
+        eventForm.value.location = ''
         dialogVisible.value = false
       }
     } catch (error) {
