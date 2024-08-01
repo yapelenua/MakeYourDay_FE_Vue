@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
   <ElDialog
     v-if="eventsInfoDialogVisible"
@@ -26,14 +27,24 @@
           />
         </ElFormItem>
         <ElFormItem label="Location" required>
-          <el-autocomplete
-            v-model="selectedEvent.location"
-            :fetch-suggestions="fetchSuggestions"
-            clearable
-            class="inline-input w-50"
-            :disabled="!isEditing"
-            @select="selectLocation"
-          />
+          <div class="relative w-full">
+            <ElInput
+              v-model="locationQuery"
+              placeholder="Enter 3 first letters of your location"
+              clearable
+              :disabled="!isEditing"
+            />
+            <ul v-if="isEditing && suggestions.length && selectedEvent.location.length" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md z-50 max-h-60 overflow-y-auto mt-1">
+              <li
+                v-for="item in suggestions"
+                :key="item.place_id"
+                class="p-2 cursor-pointer hover:bg-gray-100"
+                @click="handleSelectLocation(item)"
+              >
+                {{ item.description }}
+              </li>
+            </ul>
+          </div>
         </ElFormItem>
         <h1>Your location</h1>
         <GoogleMap :lat="selectedEvent.coords?.lat ?? 50.450001" :lng="selectedEvent.coords?.lng ?? 30.523333" />
@@ -50,16 +61,32 @@
 <script setup lang="ts">
 import { ElForm, ElFormItem, ElInput, ElButton, ElDialog } from 'element-plus'
 import GoogleMap from './GoogleMap.vue'
+import { usePlacesAutocomplete } from 'vue-use-places-autocomplete'
 
 const {
   startEditing,
   saveEdit,
   cancelEdit,
   deleteEvent,
-  fetchSuggestions,
   selectLocation,
   eventsInfoDialogVisible,
   selectedEvent,
-  isEditing
+  isEditing,
+  locationQuery
 } = useEvents()
+
+watch(() => selectedEvent.value?.location, (newLocation) => {
+  locationQuery.value = newLocation || ''
+})
+
+const { suggestions } = usePlacesAutocomplete(locationQuery, {
+  debounce: 500,
+  minLengthAutocomplete: 2
+})
+
+const handleSelectLocation = (item: any) => {
+  suggestions.value = []
+  selectLocation(item)
+  locationQuery.value = item.description
+}
 </script>

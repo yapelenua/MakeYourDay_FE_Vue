@@ -27,6 +27,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
   const isEditing = ref(false)
   const searchValue = ref('')
   const query = ref('')
+  const locationQuery = ref(selectedEvent.value?.location || '')
 
   const addEvent = async () => {
     try {
@@ -104,7 +105,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
   const saveEdit = async () => {
     try {
       if (selectedEvent.value && user.value) {
-        const newCoords = await getLatLong(selectedEvent.value.location)
+        const newCoords = await getLatLong(locationQuery.value)
 
         if (newCoords) {
           selectedEvent.value.date = format(new Date(selectedEvent.value.date), 'yyyy-MM-dd')
@@ -182,28 +183,9 @@ export const useEventListStore = defineStore('eventListStore', () => {
     }
   }
 
-  const fetchSuggestions = (queryString: string, cb: any) => {
-    if (!queryString) {
-      cb([])
-      return
-    }
-
-    const autocompleteService = new google.maps.places.AutocompleteService()
-    autocompleteService.getPlacePredictions({ input: queryString }, (predictions: any, status: string) => {
-      if (status !== google.maps.places.EPlacesServiceStatus.OK) {
-        cb([])
-        return
-      }
-      cb(predictions.map((prediction: any) => ({
-        value: prediction.description,
-        place_id: prediction.place_id
-      })))
-    })
-  }
-
   const selectLocation = (item: any) => {
-    eventForm.value.location = item.value
-    query.value = item.value
+    eventForm.value.location = item.description
+    query.value = item.description
   }
 
   return {
@@ -223,11 +205,11 @@ export const useEventListStore = defineStore('eventListStore', () => {
     handleDateSelect,
     hasEventOnDate,
     deleteEvent,
-    fetchSuggestions,
     selectLocation,
     searchValue,
     filteredEvents,
-    query
+    query,
+    locationQuery
   }
 })
 

@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
   <ElDialog
     v-if="dialogVisible"
@@ -15,14 +16,23 @@
         <ElInput v-model="eventForm.description" required clearable />
       </ElFormItem>
       <ElFormItem label="Location" required>
-        <el-autocomplete
-          v-model="query"
-          :fetch-suggestions="fetchSuggestions"
-          clearable
-          class="inline-input w-full"
-          placeholder="Please Input"
-          @select="selectLocation"
-        />
+        <div class="relative w-full">
+          <ElInput
+            v-model="query"
+            placeholder="Enter 3 first letters of your location"
+            clearable
+          />
+          <ul v-if="suggestions.length && query.length" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md z-50 max-h-60 overflow-y-auto mt-1">
+            <li
+              v-for="item in suggestions"
+              :key="item.place_id"
+              class="p-2 cursor-pointer hover:bg-gray-100"
+              @click="handleSelectLocation(item)"
+            >
+              {{ item.description }}
+            </li>
+          </ul>
+        </div>
       </ElFormItem>
       <ElFormItem label="Date" required>
         <ElDatePicker
@@ -46,14 +56,23 @@
 <script lang="ts" setup>
 import { ElForm, ElFormItem, ElInput, ElButton, ElDialog, ElSelect, ElDatePicker } from 'element-plus'
 import PriorityPicker from '../../shared/PriorityPicker.vue'
+import { usePlacesAutocomplete } from 'vue-use-places-autocomplete'
 
 const {
   eventForm,
   dialogVisible,
   query,
   addEvent,
-  selectLocation,
-  fetchSuggestions
+  selectLocation
 } = useEvents()
 
+const { suggestions } = usePlacesAutocomplete(query, {
+  debounce: 500,
+  minLengthAutocomplete: 2
+})
+
+const handleSelectLocation = (item: any) => {
+  suggestions.value = []
+  selectLocation(item)
+}
 </script>
