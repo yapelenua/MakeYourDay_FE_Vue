@@ -1,12 +1,12 @@
 <template>
-  <ElCard class="auth-card rounded-xl min-w-[320px] w-[450px] h-[400px] flex justify-center items-center">
+  <ElCard class="auth-card rounded-xl h-[400px] flex justify-center items-center">
     <h2 class="text-2xl font-bold mb-4">Register</h2>
     <ElForm
       ref="registerFormRef"
       :model="registerForm"
       :rules="signUpRules"
       label-position="top"
-      class="space-y-4 w-[250px]"
+      class="space-y-4"
       @submit.prevent="register"
     >
       <ElFormItem label="Email" prop="email" required>
@@ -35,20 +35,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { supabase } from '@/supabase'
 import { ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
 
 const registerFormRef = ref()
-const registerForm = reactive({
+const registerForm = ref({
   email: '',
   password: '',
   confirmPassword: ''
 })
 
 const confirmPasswordValidator = (_: any, value: string, callback: any) => {
-  if (value !== registerForm.password) {
+  if (value !== registerForm.value.password) {
     callback(new Error('Passwords do not match'))
   } else {
     callback()
@@ -67,7 +67,7 @@ const register = () => {
   registerFormRef.value?.validate(async (isValid: boolean) => {
     if (isValid) {
       try {
-        const { email, password } = registerForm
+        const { email, password } = registerForm.value
         const { data, error } = await supabase.auth.signUp({
           email,
           password
