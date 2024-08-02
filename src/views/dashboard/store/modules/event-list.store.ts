@@ -78,6 +78,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
 
   const openEventDialog = (event: IEvent) => {
     selectedEvent.value = { ...event }
+    locationQuery.value = event.location
     originalEvent.value = { ...event }
     eventsInfoDialogVisible.value = true
     isEditing.value = false
@@ -112,6 +113,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
         if (newCoords) {
           selectedEvent.value.date = format(new Date(selectedEvent.value.date), 'yyyy-MM-dd')
           selectedEvent.value.coords = newCoords
+          selectedEvent.value.location = locationQuery.value
 
           const index = user.value.events.findIndex((event: IEvent) => event.id === selectedEvent.value!.id)
           if (index !== -1) {
@@ -139,6 +141,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
   const cancelEdit = () => {
     if (originalEvent.value) {
       selectedEvent.value = { ...originalEvent.value }
+      locationQuery.value = originalEvent.value.location
     }
     isEditing.value = false
   }
