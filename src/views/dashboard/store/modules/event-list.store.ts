@@ -65,6 +65,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
         eventForm.value.date = ''
         eventForm.value.location = ''
         dialogVisible.value = false
+        query.value = ''
       }
     } catch (error) {
       console.error('Error adding event:', error)
@@ -124,6 +125,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
             if (error) throw error
 
             isEditing.value = false
+            eventForm.value.location = ''
           }
         } else {
           throw new Error('Failed to get coordinates for the new location.')

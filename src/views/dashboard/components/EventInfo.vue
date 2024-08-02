@@ -33,13 +33,15 @@
               placeholder="Enter 3 first letters of your location"
               clearable
               :disabled="!isEditing"
+              @focus="isLocationInputFocused = true"
+              @blur="isLocationInputFocused = false"
             />
-            <ul v-if="isEditing && suggestions.length && selectedEvent.location.length" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md z-50 max-h-60 overflow-y-auto mt-1">
+            <ul v-if="isLocationInputFocused && suggestions.length && selectedEvent.location.length" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md z-50 max-h-60 overflow-y-auto mt-1">
               <li
                 v-for="item in suggestions"
                 :key="item.place_id"
                 class="p-2 cursor-pointer hover:bg-gray-100"
-                @click="handleSelectLocation(item)"
+                @mousedown.prevent="handleSelectLocation(item)"
               >
                 {{ item.description }}
               </li>
@@ -62,6 +64,7 @@
 import { ElForm, ElFormItem, ElInput, ElButton, ElDialog } from 'element-plus'
 import GoogleMap from './GoogleMap.vue'
 import { usePlacesAutocomplete } from 'vue-use-places-autocomplete'
+const isLocationInputFocused = ref(false)
 
 const {
   startEditing,
@@ -88,5 +91,6 @@ const handleSelectLocation = (item: any) => {
   suggestions.value = []
   selectLocation(item)
   locationQuery.value = item.description
+  isLocationInputFocused.value = false
 }
 </script>

@@ -21,13 +21,15 @@
             v-model="query"
             placeholder="Enter 3 first letters of your location"
             clearable
+            @focus="isLocationInputFocused = true"
+            @blur="isLocationInputFocused = false"
           />
-          <ul v-if="suggestions.length && query.length" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md z-50 max-h-60 overflow-y-auto mt-1">
+          <ul v-if="isLocationInputFocused && suggestions.length && query.length" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md z-50 max-h-60 overflow-y-auto mt-1">
             <li
               v-for="item in suggestions"
               :key="item.place_id"
               class="p-2 cursor-pointer hover:bg-gray-100"
-              @click="handleSelectLocation(item)"
+              @mousedown.prevent="handleSelectLocation(item)"
             >
               {{ item.description }}
             </li>
@@ -57,6 +59,7 @@
 import { ElForm, ElFormItem, ElInput, ElButton, ElDialog, ElSelect, ElDatePicker } from 'element-plus'
 import PriorityPicker from '../../shared/PriorityPicker.vue'
 import { usePlacesAutocomplete } from 'vue-use-places-autocomplete'
+const isLocationInputFocused = ref(false)
 
 const {
   eventForm,
@@ -72,7 +75,8 @@ const { suggestions } = usePlacesAutocomplete(query, {
 })
 
 const handleSelectLocation = (item: any) => {
-  suggestions.value = []
   selectLocation(item)
+  suggestions.value = []
+  isLocationInputFocused.value = false
 }
 </script>
