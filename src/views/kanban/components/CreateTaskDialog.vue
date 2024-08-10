@@ -26,7 +26,7 @@
           <PriorityPicker />
         </ElSelect>
       </ElFormItem>
-      <ElFormItem>
+      <ElFormItem v-if="!kanbanForm.image.src">
         <el-upload
           class="upload-demo mb-6"
           drag
@@ -44,23 +44,54 @@
             </div>
           </template>
         </el-upload>
+        <ElButton class="ml-[20px]" @click="handleOpenGaleryPrewiev">Or upload from your gallery</ElButton>
+      </ElFormItem>
+      <ElFormItem v-else>
+        <div class="relative inline-block">
+          <img
+            :src="kanbanForm.image.src"
+            class="h-[180px] w-[300px] object-contain rounded-md cursor-pointer"
+          >
+          <el-icon
+            class="absolute top-2 right-2 cursor-pointer bg-white rounded-full p-1 shadow-lg"
+            :size="30"
+            @click="removeImage"
+          >
+            <Delete />
+          </el-icon>
+        </div>
       </ElFormItem>
       <ElFormItem>
         <ElButton type="primary" native-type="submit">Add Task</ElButton>
       </ElFormItem>
     </ElForm>
   </ElDialog>
+  <GaleryPrewievDialog />
 </template>
+
 <script lang="ts" setup>
 import { useKanban } from '../store/modules/kanban.store'
 import { v4 as uuidv4 } from 'uuid'
 import PriorityPicker from '../../shared/PriorityPicker.vue'
+import { Delete } from '@element-plus/icons-vue'
 
 const {
   dialogVisible,
   kanbanForm,
-  addTask
+  addTask,
+  galeryPrewievDialog,
+  isAddedFromGalery
 } = useKanban()
+
+const handleOpenGaleryPrewiev = () => {
+  dialogVisible.value = false
+  galeryPrewievDialog.value = true
+}
+
+const removeImage = () => {
+  kanbanForm.value.image = { id: '', src: '' }
+  isAddedFromGalery.value = false
+}
 
 const handleBeforeUpload = async (file: File) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'

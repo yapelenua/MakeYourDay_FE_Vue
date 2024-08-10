@@ -6,4 +6,6 @@ export interface IEvent {
   location: string
   coords: { lat: number; lng: number } | null
   priority: string
+  kanbanRelate?: string
+  kanbanRelateId?: string
 }

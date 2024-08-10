@@ -2,14 +2,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/supabase'
-import { useRoute } from 'vue-router'
 import { v4 as uuidv4 } from 'uuid'
-import type { IColumn, ITask } from '../../types/kanban.types'
+import type { IColumn, IEventToTask, ITask } from '../../types/kanban.types'
 import { format } from 'date-fns'
 
 export const useKanbanStore = defineStore('kanbanStore', () => {
   const { user } = useGeneral()
-  const route = useRoute()
+  const { addingToSupabase } = useGalery()
   const kanbanId = ref('')
 
   const dialogVisible = ref(false)
@@ -17,9 +16,11 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
   const selectedTask = ref<ITask>()
   const cards = ref<ITask[]>([])
   const isEditing = ref(false)
+  const isAddedFromGalery = ref(false)
   const originalTask = ref<ITask>()
   const columnStatuses: string[] = ['New', 'To Do', 'In Progress', 'Done']
   const columns = ref<Record<string, IColumn>>({})
+  const galeryPrewievDialog = ref(false)
   const kanbanForm = ref<ITask>({
     id: '',
     title: '',
@@ -40,11 +41,10 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
     })
   }
 
-  const fetchKanbanData = async () => {
+  const fetchKanbanData = async (id: string) => {
     initializeColumns()
     try {
       const userId = user.value?.id
-      kanbanId.value = route.params.id as string
       if (!userId) {
         throw new Error('User ID is not available')
       }
@@ -58,7 +58,7 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
       if (error) throw error
 
       if (data && data.kanbans) {
-        const kanban = data.kanbans.find((k: ITask) => k.id === kanbanId.value)
+        const kanban = data.kanbans.find((k: ITask) => k.id === id)
         if (kanban) {
           cards.value = kanban.data
           cards.value.forEach((card: ITask) => {
@@ -130,7 +130,10 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
     }
   }
 
-  const addTask = async () => {
+  const addTask = async (item: IEventToTask) => {
+    if (item.kanbanRelateId) {
+      handleEventToTask(item)
+    }
     const newTask: ITask = {
       id: uuidv4(),
       title: kanbanForm.value.title,
@@ -164,8 +167,18 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
       await updateCardOrderInSupabase(data.kanbans)
     }
 
+    if (kanbanForm.value.image.src && !isAddedFromGalery.value) {
+      addingToSupabase(kanbanForm.value.image)
+    }
+
     kanbanForm.value.title = ''
+    kanbanForm.value.image = { id: '', src: '' }
+    kanbanForm.value.description = ''
+    kanbanForm.value.priority = ''
+    kanbanForm.value.deadline = ''
+    kanbanForm.value.status = ''
     dialogVisible.value = false
+    isAddedFromGalery.value = false
   }
 
   const onDragEnd = async (event: any) => {
@@ -311,6 +324,17 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
     dialogVisible.value = !dialogVisible.value
   }
 
+  const handleEventToTask = (item: IEventToTask) => {
+    kanbanId.value = item.kanbanRelateId as string
+
+    kanbanForm.value.title = item.title
+    kanbanForm.value.description = item.description
+    kanbanForm.value.priority = item.priority
+    kanbanForm.value.deadline = item.date
+    kanbanForm.value.status = 'New'
+
+    console.log('jjjjjffffff', kanbanForm.value)
+  }
   return {
     dialogVisible,
     taskDialogVisible,
@@ -324,9 +348,14 @@ export const useKanbanStore = defineStore('kanbanStore', () => {
     startEditing,
     cancelEdit,
     saveTask,
+    galeryPrewievDialog,
     deleteTask,
     fetchKanbanData,
-    toggleCreateTaskModal
+    toggleCreateTaskModal,
+    user,
+    kanbanId,
+    initializeColumns,
+    isAddedFromGalery
   }
 })
 

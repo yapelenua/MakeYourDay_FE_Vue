@@ -15,8 +15,6 @@
       clearable
       class="h-[30px] w-full mb-[10px]"
     />
-
-    <!-- User Events List -->
     <div
       class="w-full flex flex-wrap gap-5"
       :class="isMobile ? 'h-[300px]' : 'h-[500px] overflow-y-auto'"
@@ -24,18 +22,29 @@
       <template v-if="filteredEvents.length > 0">
         <template v-if="isMobile">
           <Swiper :slides-per-view="1" :space-between="50" class="swiper-container">
-            <SwiperSlide v-for="event in visibleEvents" :key="event.id">
-              <EventCard :event="event" />
+            <SwiperSlide v-for="event in filteredEvents" :key="event.id">
+              <ItemObserver :removeIfInvisible="false">
+                <EventCard :event="event" />
+
+                <template #placeholder>
+                  <div class="w-40 h-40" />
+                </template>
+              </ItemObserver>
             </SwiperSlide>
           </Swiper>
           <div ref="loadMoreTrigger" class="load-more-trigger" />
         </template>
         <template v-else>
-          <div v-for="event in visibleEvents" :key="event.id" class="mt-5">
-            <EventCard :event="event" />
-          </div>
+          <template v-for="event in filteredEvents" :key="event.id">
+            <ItemObserver :removeIfInvisible="false">
+              <EventCard :event="event" />
+
+              <template #placeholder>
+                <div class="w-40 h-40" />
+              </template>
+            </ItemObserver>
+          </template>
         </template>
-        <div ref="loadMoreTrigger" class="load-more-trigger" />
       </template>
       <template v-else>
         <div class="h-96 w-full">
@@ -47,72 +56,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, onUpdated } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import { ElButton } from 'element-plus'
 import AddEventDialog from './AddEventDialog.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper-bundle.css'
-import type { IEvent } from '../types/dashboard.types'
 
 const { isMobile, updateScreenSize } = useGeneral()
-const visibleEvents = ref<IEvent[]>([])
-const loadMoreTrigger = ref<HTMLDivElement | null>(null)
 
 const {
   dialogVisible,
   filteredEvents,
-  searchValue,
-  selectedDate
+  searchValue
 } = useEvents()
-
-const loadMoreEvents = () => {
-  const currentLength = visibleEvents.value.length
-  const nextBatch = filteredEvents.value.slice(currentLength, currentLength + 2)
-  visibleEvents.value = [...visibleEvents.value, ...nextBatch]
-}
-
-const observer = new IntersectionObserver((entries) => {
-  if (entries[0].isIntersecting) {
-    loadMoreEvents()
-  }
-}, {
-  rootMargin: '20px',
-  threshold: 1.0
-})
-
-const observeLoadMoreTrigger = () => {
-  if (loadMoreTrigger.value) {
-    observer.observe(loadMoreTrigger.value)
-  }
-}
-
-const unobserveLoadMoreTrigger = () => {
-  if (loadMoreTrigger.value) {
-    observer.unobserve(loadMoreTrigger.value)
-  }
-}
 
 onMounted(() => {
   window.addEventListener('resize', updateScreenSize)
-  visibleEvents.value = filteredEvents.value.slice(0, 4)
-  observeLoadMoreTrigger()
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateScreenSize)
-  unobserveLoadMoreTrigger()
 })
 
-onUpdated(() => {
-  unobserveLoadMoreTrigger()
-  observeLoadMoreTrigger()
-})
-
-watch([filteredEvents, selectedDate], () => {
-  visibleEvents.value = filteredEvents.value.slice(0, 4)
-  unobserveLoadMoreTrigger()
-  observeLoadMoreTrigger()
-})
 </script>
 
 <style scoped>

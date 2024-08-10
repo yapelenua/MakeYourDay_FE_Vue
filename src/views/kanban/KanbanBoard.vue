@@ -14,14 +14,19 @@ import { useKanban } from './store/modules/kanban.store'
 import CreateTaskDialog from './components/CreateTaskDialog.vue'
 import TaskInfoDialog from './components/TaskInfoDialog.vue'
 import KanbanRow from './components/KanbanRow.vue'
+const route = useRoute()
 
 const {
   fetchKanbanData,
-  toggleCreateTaskModal
+  toggleCreateTaskModal,
+  kanbanId,
+  initializeColumns
 } = useKanban()
 
 onMounted(() => {
-  fetchKanbanData()
+  kanbanId.value = route.params.id as string
+  initializeColumns()
+  fetchKanbanData(kanbanId.value)
 })
 
 </script>

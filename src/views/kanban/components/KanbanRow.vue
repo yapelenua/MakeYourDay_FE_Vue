@@ -1,5 +1,5 @@
 <template>
-  <div class="kanban-board flex rounded-lg w-[75vw] h-[70vh] justify-around p-5 bg-gray-100">
+  <div class="main-wrapper kanban-board flex rounded-lg justify-around p-5 bg-gray-100">
     <template v-if="isMobile">
       <h1>Sorry but Kanban is not available in mobile device</h1>
     </template>
@@ -16,7 +16,7 @@
           v-model="column.tasks"
           group="tasks"
           :animation="150"
-          class="kanban-list min-h-[100px] max-h-[60vh] overflow-y-auto overflow-x-hidden"
+          class="kanban-list min-h-[100px] overflow-y-auto overflow-x-hidden"
           @end="onDragEnd"
         >
           <template #item="{ element }">

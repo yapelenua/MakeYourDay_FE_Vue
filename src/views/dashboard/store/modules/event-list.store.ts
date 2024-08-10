@@ -11,14 +11,21 @@ export const useEventListStore = defineStore('eventListStore', () => {
   selectedDate.value = format(today, 'yyyy-MM-dd')
 
   const eventForm = ref({
-    name: '',
+    id: '',
+    deadline: '',
+    order: 0,
+    status: '',
+    title: '',
     description: '',
     date: selectedDate.value,
     location: '',
-    coords: { lat: '', lng: '' },
-    priority: ''
+    coords: { lat: 0, lng: 0 },
+    priority: '',
+    kanbanRelate: '',
+    kanbanRelateId: ''
   })
   const { user } = useGeneral()
+  const { addTask } = useKanban()
 
   const dialogVisible = ref(false)
   const eventsInfoDialogVisible = ref(false)
@@ -31,7 +38,7 @@ export const useEventListStore = defineStore('eventListStore', () => {
 
   const addEvent = async () => {
     try {
-      if (!eventForm.value.name.trim() || !eventForm.value.description.trim() || !eventForm.value.date) {
+      if (!eventForm.value.title.trim() || !eventForm.value.description.trim() || !eventForm.value.date) {
         ElNotification({
           title: 'Error',
           message: 'Please fill in all fields',
@@ -42,16 +49,21 @@ export const useEventListStore = defineStore('eventListStore', () => {
 
       const newEvent: IEvent = {
         id: uuidv4(),
-        title: eventForm.value.name,
+        title: eventForm.value.title,
         description: eventForm.value.description,
         date: format(new Date(eventForm.value.date), 'yyyy-MM-dd') || selectedDate.value,
         location: query.value,
         coords: await getLatLong(query.value),
-        priority: eventForm.value.priority
+        priority: eventForm.value.priority,
+        kanbanRelate: eventForm.value.kanbanRelate,
+        kanbanRelateId: eventForm.value.kanbanRelateId
       }
 
       if (user.value && user.value.events) {
         user.value.events.push(newEvent)
+        if (eventForm.value.kanbanRelateId) {
+          addTask(eventForm.value)
+        }
 
         const { error } = await supabase
           .from('profiles')
@@ -60,10 +72,12 @@ export const useEventListStore = defineStore('eventListStore', () => {
 
         if (error) throw error
 
-        eventForm.value.name = ''
+        eventForm.value.title = ''
         eventForm.value.description = ''
         eventForm.value.date = ''
         eventForm.value.location = ''
+        eventForm.value.priority = ''
+        eventForm.value.kanbanRelate = ''
         dialogVisible.value = false
         query.value = ''
       }
@@ -215,7 +229,8 @@ export const useEventListStore = defineStore('eventListStore', () => {
     searchValue,
     filteredEvents,
     query,
-    locationQuery
+    locationQuery,
+    user
   }
 })
 

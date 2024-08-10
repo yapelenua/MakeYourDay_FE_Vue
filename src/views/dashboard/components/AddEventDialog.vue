@@ -10,7 +10,7 @@
   >
     <ElForm :model="eventForm" label-position="top" class="mb-4" @submit.prevent="addEvent">
       <ElFormItem label="Name" required>
-        <ElInput v-model="eventForm.name" required clearable />
+        <ElInput v-model="eventForm.title" required clearable />
       </ElFormItem>
       <ElFormItem label="Description" required>
         <ElInput v-model="eventForm.description" required clearable />
@@ -48,6 +48,17 @@
           <PriorityPicker />
         </ElSelect>
       </ElFormItem>
+      <ElFormItem label="Kanban Relation">
+        <ElSelect v-model="eventForm.kanbanRelate" placeholder="Maybe you want to add this event to your task?(optional)">
+          <ElOption
+            v-for="(kanban,index) in user.kanbans"
+            :key="index"
+            :label="kanban.name"
+            :value="kanban.name"
+            @click="handleSelectKanbanId(kanban.id)"
+          />
+        </ElSelect>
+      </ElFormItem>
       <ElFormItem>
         <ElButton type="primary" native-type="submit">Add Event</ElButton>
       </ElFormItem>
@@ -66,8 +77,16 @@ const {
   dialogVisible,
   query,
   addEvent,
-  selectLocation
+  selectLocation,
+  user
 } = useEvents()
+
+const { fetchKanbanData } = useKanban()
+
+const handleSelectKanbanId = (id: string) => {
+  eventForm.value.kanbanRelateId = id
+  fetchKanbanData(eventForm.value.kanbanRelateId)
+}
 
 const { suggestions } = usePlacesAutocomplete(query, {
   debounce: 500,

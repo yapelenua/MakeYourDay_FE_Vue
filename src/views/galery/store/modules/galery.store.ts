@@ -45,23 +45,27 @@ export const useGaleryStore = defineStore('galeryStore', () => {
       }
 
       if (user.value && user.value.images) {
-        const originalImages = [...user.value.images]
-        user.value.images.push(newImage)
-
-        try {
-          const { error } = await supabase
-            .from('profiles')
-            .update({ images: user.value.images })
-            .eq('id', user.value.id)
-
-          if (error) throw error
-        } catch (error) {
-          user.value.images = originalImages
-          console.error('Error adding image:', error)
-        }
+        addingToSupabase(newImage)
       }
     }
     reader.readAsDataURL(file)
+  }
+
+  const addingToSupabase = async (image: IPhoto) => {
+    const originalImages = [...user.value.images]
+    user.value.images.push(image)
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ images: user.value.images })
+        .eq('id', user.value.id)
+
+      if (error) throw error
+    } catch (error) {
+      user.value.images = originalImages
+      console.error('Error adding image:', error)
+    }
   }
 
   const removeImage = async (id: string) => {
@@ -108,7 +112,8 @@ export const useGaleryStore = defineStore('galeryStore', () => {
     removeImage,
     openPhotoPreview,
     downloadImage,
-    user
+    user,
+    addingToSupabase
   }
 })
 

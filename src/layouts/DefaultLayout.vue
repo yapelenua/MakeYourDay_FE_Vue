@@ -2,8 +2,8 @@
   <div class="default-layout flex flex-col h-full overflow-hiden relative">
     <component :is="isHeaderAvaiable ? Header : ''" />
     <div class="h-full flex justify-center items-center relative">
-      <AnimatedLayout class="absolute inset-0 z-0 h-[120vh]" />
-      <div class="relative bg-gray-100 max-w-[90vw] rounded-xl drop-shadow-xl">
+      <AnimatedLayout class="absolute inset-0 z-0" />
+      <div class="relative bg-gray-100 rounded-xl drop-shadow-xl">
         <router-view />
       </div>
     </div>

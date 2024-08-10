@@ -2,7 +2,7 @@
 <template>
   <transition name="slide-fade">
     <div v-if="isMenuOpen" class="md:hidden">
-      <RouterLink v-for="route in headerRoutes" :key="route.to" :to="route.to" :class="route.class" @click="$emit('toggleMenu')">
+      <RouterLink v-for="route in headerRoutes" :key="route.to" :to="route.to" @click="$emit('toggleMenu')">
         {{ route.title }}
       </RouterLink>
       <ElButton type="danger" class="block w-full text-left px-4 py-2" @click="$emit('logout')">Logout</ElButton>
