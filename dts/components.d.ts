@@ -35,6 +35,7 @@ declare module 'vue' {
     GoogleMap: typeof import('./../src/views/dashboard/components/GoogleMap.vue')['default']
     Header: typeof import('./../src/components/layout/Header.vue')['default']
     ItemObserver: typeof import('./../src/views/dashboard/components/ItemObserver.vue')['default']
+    KanbanCard: typeof import('./../src/views/kanban/components/KanbanCard.vue')['default']
     KanbanItem: typeof import('./../src/views/kanban/components/KanbanItem.vue')['default']
     KanbanRow: typeof import('./../src/views/kanban/components/KanbanRow.vue')['default']
     Lol: typeof import('./../src/views/dashboard/components/Lol.vue')['default']
